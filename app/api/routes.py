@@ -4,18 +4,18 @@ from flask import jsonify
 from app.utils import authenticate_restful, authorized
 
 
-@api_bp.route("/route1", methods=["GET"])
+@api_bp.route("/public", methods=["GET"])
 def route1():
     return jsonify(message="This route is accessible by anyone")
 
 
-@api_bp.route("/route2", methods=["GET"])
+@api_bp.route("/authenticated", methods=["GET"])
 @authenticate_restful
 def route2(resp):
     return jsonify(message="This route is accessible by authetciated users")
 
 
-@api_bp.route("/route3", methods=["GET"])
+@api_bp.route("/authorized", methods=["GET"])
 @authorized
 def route3(resp):
     return jsonify(message="This route is accessible by admin users")
