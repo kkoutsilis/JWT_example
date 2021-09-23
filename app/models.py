@@ -13,7 +13,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(128), unique=True, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)  # new
+    password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
     created_date = db.Column(db.DateTime, default=func.now(), nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -26,7 +26,7 @@ class User(db.Model):
         ).decode()
         self.admin = admin
 
-    def encode_auth_token(self, user_id):
+    def encode_auth_token(self):
         """Generates the auth token"""
         try:
             payload = {
@@ -36,7 +36,8 @@ class User(db.Model):
                     seconds=current_app.config.get("TOKEN_EXPIRATION_SECONDS"),
                 ),
                 "iat": datetime.datetime.utcnow(),
-                "sub": user_id,
+                "sub": self.id,
+                "adm": self.admin,
             }
             return jwt.encode(
                 payload, current_app.config.get("SECRET_KEY"), algorithm="HS256"
@@ -51,7 +52,7 @@ class User(db.Model):
         """
         try:
             payload = jwt.decode(auth_token, current_app.config.get("SECRET_KEY"))
-            return payload["sub"]
+            return payload["sub"], payload["adm"]
         except jwt.ExpiredSignatureError:
             return "Signature expired. Please log in again."
         except jwt.InvalidTokenError:

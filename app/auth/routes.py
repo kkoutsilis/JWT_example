@@ -28,7 +28,7 @@ def register_user():
             db.session.commit()
 
             # generate auth token
-            auth_token = new_user.encode_auth_token(new_user.id)
+            auth_token = new_user.encode_auth_token()
             response_object["status"] = "success"
             response_object["message"] = "Successfully registered."
             response_object["auth_token"] = auth_token.decode()
@@ -53,7 +53,7 @@ def login_user():
     try:
         user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password):
-            auth_token = user.encode_auth_token(user.id)
+            auth_token = user.encode_auth_token()
             if auth_token:
                 response_object["status"] = "success"
                 response_object["message"] = "Successfully logged in."
