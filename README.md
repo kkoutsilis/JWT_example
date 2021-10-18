@@ -13,6 +13,8 @@ Simple flask project to explore JWT use.
 4. Install requirements  
    `pip install -r requirements.txt`
 5. Create sqlite database  
+   `flask db init`  
+   `flask db migrate`  
    `flask db upgrade`
 6. Run app  
    `flask run`  
